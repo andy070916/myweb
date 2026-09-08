@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>郭宇茗 YU-MING GUO | 個人 IP 作品集</title>
+  <style>
+    /* ==================== 1. 全域變數與基礎設定 ==================== */
+    :root {
+      --bg-primary: #0f1015;
+      --bg-secondary: #1a1c23;
+      --bg-card: #232630;
+      --accent-color: #6366f1; /* 質感靛紫 */
+      --accent-hover: #4f46e5;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, "Noto Sans TC", sans-serif;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .section-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 3rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 50px;
+      height: 4px;
+      background: var(--accent-color);
+      margin: 0.8rem auto 0;
+      border-radius: 2px;
+    }
+
+    /* ==================== 2. 導覽列 ==================== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(15, 16, 21, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 70px;
+    }
+
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .logo span {
+      color: var(--accent-color);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--accent-color);
+    }
+
+    /* ==================== 3. Hero 視覺首頁 ==================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 1rem 40px;
+      background: radial-gradient(circle at 50% 30%, rgba(99, 102, 241, 0.15), transparent 70%);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 0.4rem 1.2rem;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 50px;
+      color: var(--accent-color);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 1.2rem;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 0.8rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--accent-color);
+      color: #fff;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* ==================== 4. 關於我 ==================== */
+    .about {
+      padding: 6rem 0;
+      background: var(--bg-secondary);
+    }
+
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .about-text h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .about-text p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .skills-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .skill-tag {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    /* ==================== 5. 作品專案區 ==================== */
+    .portfolio {
+      padding: 6rem 0;
+    }
+
+    .filter-menu {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.5rem 1.4rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background: var(--accent-color);
+      color: #fff;
+      border-color: var(--accent-color);
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 2rem;
+    }
+
+    .project-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .project-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .card-thumb {
+      width: 100%;
+      height: 220px;
+      background-color: #333846;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-body {
+      padding: 1.5rem;
+    }
+
+    .card-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-color);
+      font-weight: 700;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      margin: 0.5rem 0;
+    }
+
+    .card-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* ==================== 6. 模態視窗 (Modal) ==================== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      max-width: 700px;
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      padding: 2.5rem;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      color: #fff;
+    }
+
+    /* ==================== 7. 聯絡與頁尾 ==================== */
+    .contact {
+      padding: 6rem 0;
+      background: var(--bg-secondary);
+      text-align: center;
+    }
+
+    .contact-wrapper {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .footer {
+      padding: 2rem 0;
+      text-align: center;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.4rem; }
+      .about-content { grid-template-columns: 1fr; gap: 2rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 導覽列 -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <div class="logo">YU-MING GUO<span>.</span></div>
+      <ul class="nav-links">
+        <li><a href="#about">關於我</a></li>
+        <li><a href="#portfolio">專案展示</a></li>
+        <li><a href="#contact">聯絡方式</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Hero 視覺首頁 -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">CREATIVE DESIGNER & MAKER</div>
+      <h1 class="hero-title">郭宇茗｜視覺與實體設計</h1>
+      <p class="hero-subtitle">跨足平面視覺、角色 IP 與實體媒材打樣，呈現大學四年的專題脈絡與創作思維。</p>
+      <div class="hero-btns">
+        <a href="#portfolio" class="btn btn-primary">瀏覽作品</a>
+        <a href="#contact" class="btn btn-secondary">聯絡我</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 關於我 -->
+  <section id="about" class="about">
+    <div class="container">
+      <h2 class="section-title">ABOUT ME</h2>
+      <div class="about-content">
+        <div class="about-text">
+          <h3>你好，我是郭宇茗。</h3>
+          <p>
+            專注於視覺傳達、原創 IP 角色開發與實體原型製作（雷射切割、結構式教具設計）。
+            在大學四年間，我致力於將平面圖樣與實體載體深度結合，透過邏輯編排與媒材實驗，讓設計不只是視覺展示，更能產生實質互動。
+          </p>
+          <div class="skills-wrapper">
+            <span class="skill-tag">品牌識別 (Identity)</span>
+            <span class="skill-tag">原創 IP 開發</span>
+            <span class="skill-tag">雷射切割打樣</span>
+            <span class="skill-tag">書籍裝幀與版面編排</span>
+            <span class="skill-tag">教具與結構原型</span>
+          </div>
+        </div>
+        <div class="about-card" style="background: var(--bg-card); padding: 2rem; border-radius: 12px; border: 1px solid var(--border-color);">
+          <h4 style="margin-bottom: 1rem; color: var(--accent-color);">四年探索主軸</h4>
+          <ul style="list-style: none; line-height: 2; color: var(--text-muted);">
+            <li>🔹 <strong>大一：</strong>基礎造型研究、個人 IP 角色雛形</li>
+            <li>🔹 <strong>大二：</strong>實體打樣與教具結構開發</li>
+            <li>🔹 <strong>大三：</strong>視覺系統規範、周邊商品化應用</li>
+            <li>🔹 <strong>大四：</strong>畢業專題創作與整合展演</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 專題作品區 -->
+  <section id="portfolio" class="portfolio">
+    <div class="container">
+      <h2 class="section-title">SELECTED WORKS</h2>
+
+      <div class="filter-menu">
+        <button class="filter-btn active" data-filter="all">全部專案</button>
+        <button class="filter-btn" data-filter="y1">大一成果</button>
+        <button class="filter-btn" data-filter="y2">大二專案</button>
+        <button class="filter-btn" data-filter="y3">大三整合</button>
+        <button class="filter-btn" data-filter="y4">畢業專題</button>
+      </div>
+
+      <div class="portfolio-grid" id="portfolioGrid"></div>
+    </div>
+  </section>
+
+  <!-- 燈箱彈窗 (Modal) -->
+  <div class="modal" id="projectModal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose">&times;</button>
+      <h3 id="modalTitle" style="font-size: 1.6rem; margin-bottom: 0.5rem;"></h3>
+      <p id="modalTag" style="color: var(--accent-color); font-size: 0.85rem; margin-bottom: 1.2rem; font-weight: bold;"></p>
+      <p id="modalDesc" style="color: var(--text-muted); line-height: 1.8;"></p>
+    </div>
+  </div>
+
+  <!-- 聯絡方式 -->
+  <section id="contact" class="contact">
+    <div class="container contact-wrapper">
+      <h2 class="section-title">GET IN TOUCH</h2>
+      <p style="color: var(--text-muted); margin-bottom: 2rem;">
+        歡迎合作邀約、展覽交流或專案洽詢。
+      </p>
+      <a href="mailto:contact@domain.com" class="btn btn-primary">寄信與我聯絡</a>
+    </div>
+  </section>
+
+  <!-- 頁尾 -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 郭宇茗 (Yu-Ming Guo). All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== 8. JavaScript ==================== -->
+  <script>
+    const projects = [
+      {
+        id: 1,
+        title: "原創 IP 角色系統與數位周邊",
+        category: "y1",
+        yearTag: "大一成果 / 角色 IP",
+        description: "以個人原創角色為核心，建立造型比例規範手冊，並延伸至社群貼圖與周邊載體開發，完成第一階段 IP 視覺語彙。"
+      },
+      {
+        id: 2,
+        title: "雷切複合媒材互動結構教具",
+        category: "y2",
+        yearTag: "大二專案 / 實體原型",
+        description: "結合雷射切割打樣、磁吸元件與木質榫接結構，解決觸覺互動與組裝公差問題，打造可自主探索的教具原型。"
+      },
+      {
+        id: 3,
+        title: "專案視覺識別手冊與印刷應用",
+        category: "y3",
+        yearTag: "大三整合 / 視覺傳達",
+        description: "制定完整的品牌識別系統（VI），涵蓋標誌標準字、色彩規範、宣傳摺頁與展場動線視覺整合。"
+      },
+      {
+        id: 4,
+        title: "畢業設計：虛實相生——媒材重構展演",
+        category: "y4",
+        yearTag: "畢業專題 / 複合展演",
+        description: "大學四年整合之作，探討數位視覺與實體觸感的張力，融合立體展具搭設、雷切工藝與手工裝幀專書，完成整體展演空間策劃。"
+      }
+    ];
+
+    const portfolioGrid = document.getElementById("portfolioGrid");
+    const filterBtns = document.querySelectorAll(".filter-btn");
+    const modal = document.getElementById("projectModal");
+    const modalClose = document.getElementById("modalClose");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalTag = document.getElementById("modalTag");
+    const modalDesc = document.getElementById("modalDesc");
+
+    function renderProjects(items) {
+      portfolioGrid.innerHTML = items.map(item => `
+        <div class="project-card" onclick="openModal(${item.id})">
+          <div class="card-thumb">
+            <span>[ ${item.title} 封面圖 ]</span>
+          </div>
+          <div class="card-body">
+            <span class="card-tag">${item.yearTag}</span>
+            <h3 class="card-title">${item.title}</h3>
+            <p class="card-desc">${item.description.slice(0, 46)}...</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        filterBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const filter = btn.dataset.filter;
+        if (filter === "all") {
+          renderProjects(projects);
+        } else {
+          renderProjects(projects.filter(p => p.category === filter));
+        }
+      });
+    });
+
+    function openModal(id) {
+      const project = projects.find(p => p.id === id);
+      if (!project) return;
+
+      modalTitle.textContent = project.title;
+      modalTag.textContent = project.yearTag;
+      modalDesc.textContent = project.description;
+      modal.classList.add("show");
+    }
+
+    modalClose.addEventListener("click", () => modal.classList.remove("show"));
+    window.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.remove("show");
+    });
+
+    renderProjects(projects);
+  </script>
+</body>
+</html>
