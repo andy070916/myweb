@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botanical & Nature Beauty | 純淨自然香水與美妝</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Playfair Display & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        botanical: {
+                            50: '#f4f7f4',
+                            100: '#e5ebe5',
+                            200: '#c8d7c8',
+                            300: '#a3bca3',
+                            400: '#759975',
+                            500: '#547854',
+                            600: '#415e41',
+                            700: '#344c34',
+                            800: '#2b3e2b',
+                            900: '#243324',
+                        },
+                        roseGold: {
+                            light: '#f9f1ef',
+                            DEFAULT: '#d4a373',
+                            dark: '#bc6c25',
+                            accent: '#e07a5f'
+                        },
+                        cream: '#fcfbfa',
+                        sand: '#f7f4ef'
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom background petal animation and glassmorphism */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcfbfa;
+            color: #2b3e2b;
+            overflow-x: hidden;
+        }
+
+        .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Falling Petals Background Canvas */
+        #petal-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Glassmorphism effects */
+        .glass-nav {
+            background: rgba(252, 251, 250, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(200, 215, 200, 0.3);
+        }
+
+        /* Add to cart ripple & button animations */
+        @keyframes ripple {
+            0% { transform: scale(0); opacity: 0.8; }
+            100% { transform: scale(4); opacity: 0; }
+        }
+
+        .ripple-effect {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple-effect::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 5px; height: 5px;
+            background: rgba(255, 255, 255, 0.6);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%, -50%);
+            transform-origin: 50% 50%;
+        }
+
+        .ripple-effect:active::after {
+            animation: ripple 0.6s ease-out;
+        }
+
+        /* Flying item animation */
+        .flying-item {
+            position: fixed;
+            z-index: 9999;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            pointer-events: none;
+            transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f7f4ef;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c8d7c8;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #759975;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col selection:bg-botanical-200 selection:text-botanical-900">
+
+    <!-- Falling Petals Canvas -->
+    <canvas id="petal-canvas"></canvas>
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-40 glass-nav border-b border-botanical-100 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-full bg-botanical-500 flex items-center justify-center text-white shadow-md group-hover:bg-botanical-600 transition-colors">
+                    <i class="fa-solid fa-seedling text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-serif text-2xl font-bold tracking-wide text-botanical-800">Botanical</span>
+                    <span class="block text-xs uppercase tracking-widest text-roseGold-dark font-medium">& Nature Beauty</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-botanical-700">
+                <a href="#hero" class="hover:text-botanical-500 transition-colors">首頁特輯</a>
+                <a href="#products" class="hover:text-botanical-500 transition-colors">全系列商品 (30)</a>
+                <a href="#features" class="hover:text-botanical-500 transition-colors">純淨承諾</a>
+                <a href="#story" class="hover:text-botanical-500 transition-colors">品牌故事</a>
+            </nav>
+
+            <!-- Actions (Search & Cart) -->
+            <div class="flex items-center space-x-4">
+                <div class="relative hidden sm:block">
+                    <input type="text" id="searchInput" placeholder="搜尋香水、粉底、精華..." class="bg-botanical-50/70 border border-botanical-200 rounded-full py-2 pl-4 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-botanical-400 w-48 lg:w-64 transition-all">
+                    <button class="absolute right-3 top-2.5 text-botanical-500 hover:text-botanical-700">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- Cart Button -->
+                <button id="cartToggleBtn" class="relative bg-white border border-botanical-200 p-2.5 rounded-full text-botanical-700 hover:bg-botanical-50 transition-all shadow-sm flex items-center justify-center">
+                    <i class="fa-solid fa-bag-shopping text-lg"></i>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-roseGold-dark text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow transition-transform transform scale-100">0</span>
+                </button>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobileMenuBtn" class="md:hidden text-botanical-700 p-2 focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden bg-cream border-b border-botanical-200 px-6 py-4 space-y-3">
+            <a href="#hero" class="block text-botanical-700 font-medium py-1">首頁特輯</a>
+            <a href="#products" class="block text-botanical-700 font-medium py-1">全系列商品 (30)</a>
+            <a href="#features" class="block text-botanical-700 font-medium py-1">純淨承諾</a>
+            <a href="#story" class="block text-botanical-700 font-medium py-1">品牌故事</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative pt-12 pb-20 md:py-28 overflow-hidden bg-gradient-to-b from-botanical-50/50 via-cream to-cream">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center space-x-2 bg-botanical-100 text-botanical-800 px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest shadow-sm">
+                        <i class="fa-solid fa-leaf text-botanical-600"></i>
+                        <span>100% 天然植萃美學</span>
+                    </div>
+                    <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-botanical-900 leading-tight">
+                        大自然的花香私語 <br class="hidden sm:inline"><span class="text-roseGold-dark italic">與純淨妝容的完美邂逅</span>
+                    </h1>
+                    <p class="text-botanical-700 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+                        融合晨露花瓣與大地精華，30 款匠心打造的精緻香水與植萃化妝品。無毒配方、永續包裝，為您的肌膚與靈感帶來純淨奢華的呵護。
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4 pt-2">
+                        <a href="#products" class="w-full sm:w-auto bg-botanical-600 hover:bg-botanical-700 text-white font-medium px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all text-center flex items-center justify-center space-x-2">
+                            <span>探索全部 30 款商品</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                        <a href="#features" class="w-full sm:w-auto bg-white hover:bg-botanical-50 border border-botanical-200 text-botanical-800 font-medium px-8 py-3.5 rounded-full transition-all text-center">
+                            了解純淨哲學
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 relative">
+                    <div class="relative mx-auto max-w-md lg:max-w-none">
+                        <!-- Decorative background glow -->
+                        <div class="absolute -inset-4 bg-gradient-to-tr from-botanical-200 to-roseGold-light rounded-3xl filter blur-xl opacity-70 transform -rotate-2"></div>
+                        <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white aspect-[4/5]">
+                            <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80" alt="Botanical Perfume" class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700">
+                        </div>
+                        <!-- Floating Badge -->
+                        <div class="absolute -bottom-6 -left-6 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-botanical-100 flex items-center space-x-3 max-w-xs">
+                            <div class="w-12 h-12 rounded-xl bg-roseGold-light flex items-center justify-center text-roseGold-dark">
+                                <i class="fa-solid fa-spa text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-botanical-900">有機花瓣萃取</h4>
+                                <p class="text-[11px] text-botanical-600">無動物實驗・敏感肌適用</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Bar -->
+    <section id="features" class="bg-botanical-100/60 py-12 border-y border-botanical-200/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                <div class="p-6 rounded-2xl glass-card transition-all hover:shadow-md">
+                    <div class="w-12 h-12 mx-auto mb-4 bg-botanical-500 text-white rounded-full flex items-center justify-center text-xl shadow">
+                        <i class="fa-solid fa-leaf"></i>
+                    </div>
+                    <h3 class="font-serif font-bold text-botanical-900 text-lg mb-1">100% 純天然植萃</h3>
+                    <p class="text-xs text-botanical-600">嚴選世界各地有機花卉與天然草本精油</p>
+                </div>
+                <div class="p-6 rounded-2xl glass-card transition-all hover:shadow-md">
+                    <div class="w-12 h-12 mx-auto mb-4 bg-roseGold text-white rounded-full flex items-center justify-center text-xl shadow">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <h3 class="font-serif font-bold text-botanical-900 text-lg mb-1">無動物實驗認證</h3>
+                    <p class="text-xs text-botanical-600">Cruelty-Free 關懷動物與自然生態</p>
+                </div>
+                <div class="p-6 rounded-2xl glass-card transition-all hover:shadow-md">
+                    <div class="w-12 h-12 mx-auto mb-4 bg-botanical-400 text-white rounded-full flex items-center justify-center text-xl shadow">
+                        <i class="fa-solid fa-recycle"></i>
+                    </div>
+                    <h3 class="font-serif font-bold text-botanical-900 text-lg mb-1">環保可回收包裝</h3>
+                    <p class="text-xs text-botanical-600">採用玻璃瓶身與可生物降解外盒</p>
+                </div>
+                <div class="p-6 rounded-2xl glass-card transition-all hover:shadow-md">
+                    <div class="w-12 h-12 mx-auto mb-4 bg-roseGold-dark text-white rounded-full flex items-center justify-center text-xl shadow">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="font-serif font-bold text-botanical-900 text-lg mb-1">敏感肌溫和配方</h3>
+                    <p class="text-xs text-botanical-600">不含人工防腐劑與刺激性化學香精</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto mb-12 space-y-4">
+            <span class="text-roseGold-dark text-xs uppercase tracking-widest font-semibold">Curated Collection</span>
+            <h2 class="font-serif text-3xl sm:text-4xl font-bold text-botanical-900">探索 30 款精緻香水與美妝</h2>
+            <p class="text-botanical-600 text-sm sm:text-base">從晨曦微露的花香調香水到滋養保濕的植萃粉底與唇膏，滿足您對自然的渴望。</p>
+            
+            <!-- Category Filter Buttons -->
+            <div id="filterButtons" class="flex flex-wrap items-center justify-center gap-2 pt-6">
+                <button data-filter="all" class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition-all bg-botanical-700 text-white shadow">全部商品 (30)</button>
+                <button data-filter="perfume" class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition-all bg-botanical-100 text-botanical-800 hover:bg-botanical-200">植萃香水 (15)</button>
+                <button data-filter="makeup" class="filter-btn px-6 py-2 rounded-full text-sm font-medium transition-all bg-botanical-100 text-botanical-800 hover:bg-botanical-200">自然美妝 (15)</button>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Products will be injected dynamically via JavaScript -->
+        </div>
+    </section>
+
+    <!-- Product Detail Modal -->
+    <div id="productModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden transition-opacity opacity-0 duration-300">
+        <div class="bg-cream rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-botanical-200 transform scale-95 transition-transform duration-300 relative" id="modalContentBox">
+            <button id="closeModalBtn" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-botanical-800 flex items-center justify-center shadow transition-all">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="modalBody" class="p-6 sm:p-8">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Sliding Cart Drawer -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 pointer-events-none flex justify-end">
+        <!-- Backdrop -->
+        <div id="cartBackdrop" class="absolute inset-0 bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+        
+        <!-- Drawer Panel -->
+        <div id="cartPanel" class="relative w-full max-w-md bg-cream h-full shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 pointer-events-auto">
+            <!-- Header -->
+            <div class="p-6 border-b border-botanical-200 flex items-center justify-between bg-botanical-50/50">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-bag-shopping text-botanical-700"></i>
+                    <h3 class="font-serif text-xl font-bold text-botanical-900">您的植萃購物車</h3>
+                    <span id="cartCountBadge" class="bg-botanical-200 text-botanical-800 text-xs px-2 py-0.5 rounded-full font-semibold">0</span>
+                </div>
+                <button id="closeCartBtn" class="w-8 h-8 rounded-full bg-white hover:bg-botanical-100 text-botanical-700 flex items-center justify-center shadow-sm transition-all">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Cart Items List -->
+            <div id="cartItemsList" class="flex-1 overflow-y-auto p-6 space-y-4 divide-y divide-botanical-100">
+                <!-- Empty State -->
+                <div id="emptyCartState" class="text-center py-16 space-y-4">
+                    <div class="w-16 h-16 mx-auto rounded-full bg-botanical-100 text-botanical-400 flex items-center justify-center text-2xl">
+                        <i class="fa-solid fa-basket-shopping"></i>
+                    </div>
+                    <p class="text-botanical-600 text-sm">購物車目前空空如也，快去挑選喜愛的植萃商品吧！</p>
+                </div>
+            </div>
+
+            <!-- Cart Footer -->
+            <div class="p-6 border-t border-botanical-200 bg-botanical-50/50 space-y-4">
+                <div class="flex items-center justify-between text-sm text-botanical-600">
+                    <span>商品總計</span>
+                    <span id="cartSubtotal" class="font-bold text-botanical-900 text-lg">NT$ 0</span>
+                </div>
+                <div class="flex items-center justify-between text-xs text-botanical-500">
+                    <span>全館植萃免運優惠</span>
+                    <span class="text-botanical-600 font-semibold">已套用</span>
+                </div>
+                <div class="border-t border-botanical-200 pt-3 flex items-center justify-between font-serif text-lg font-bold text-botanical-900">
+                    <span>應付金額</span>
+                    <span id="cartTotal" class="text-roseGold-dark text-xl">NT$ 0</span>
+                </div>
+                <button id="checkoutBtn" class="w-full bg-botanical-600 hover:bg-botanical-700 text-white font-medium py-3.5 rounded-2xl shadow-lg hover:shadow-xl transition-all text-center flex items-center justify-center space-x-2 disabled:opacity-55 disabled:cursor-not-allowed">
+                    <span>前往結帳頁面</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal / Page -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm hidden transition-opacity opacity-0 duration-300">
+        <div class="bg-cream rounded-3xl max-w-3xl w-full max-h-[95vh] overflow-y-auto shadow-2xl border border-botanical-200 transform scale-95 transition-transform duration-300 relative">
+            <button id="closeCheckoutBtn" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/80 hover:bg-white text-botanical-800 flex items-center justify-center shadow transition-all">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            
+            <div class="p-6 sm:p-10 space-y-8">
+                <div>
+                    <span class="text-roseGold-dark text-xs uppercase tracking-widest font-semibold">Secure Checkout</span>
+                    <h2 class="font-serif text-2xl sm:text-3xl font-bold text-botanical-900">填寫收件資訊與結帳</h2>
+                </div>
+
+                <form id="checkoutForm" class="space-y-6">
+                    <!-- Step 1: Recipient Info -->
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-bold text-botanical-800 uppercase tracking-wider flex items-center space-x-2">
+                            <i class="fa-solid fa-user-pen text-botanical-500"></i>
+                            <span>1. 收件人資訊</span>
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-botanical-700 mb-1">真實姓名</label>
+                                <input type="text" required placeholder="例如：林芬芳" class="w-full bg-white border border-botanical-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-botanical-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-botanical-700 mb-1">聯絡電話</label>
+                                <input type="tel" required placeholder="例如：0912345678" class="w-full bg-white border border-botanical-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-botanical-400">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-medium text-botanical-700 mb-1">電子信箱 (接收訂單通知)</label>
+                                <input type="email" required placeholder="botanical@example.com" class="w-full bg-white border border-botanical-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-botanical-400">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-medium text-botanical-700 mb-1">收件地址</label>
+                                <input type="text" required placeholder="例如：台北市大安區花園路 88 號 5 樓" class="w-full bg-white border border-botanical-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-botanical-400">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Shipping Method -->
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-bold text-botanical-800 uppercase tracking-wider flex items-center space-x-2">
+                            <i class="fa-solid fa-truck-fast text-botanical-500"></i>
+                            <span>2. 配送與包裝方式</span>
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <label class="border border-botanical-200 rounded-2xl p-4 flex items-start space-x-3 cursor-pointer hover:bg-botanical-50/50 transition-all bg-white">
+                                <input type="radio" name="shipping" checked class="mt-1 text-botanical-600 focus:ring-botanical-500">
+                                <div>
+                                    <span class="block text-sm font-bold text-botanical-900">綠色植萃宅配 (常溫)</span>
+                                    <span class="block text-xs text-botanical-500">嚴選黑貓宅急便配送，含環保緩衝材</span>
+                                    <span class="block text-xs font-semibold text-botanical-700 mt-1">免運費</span>
+                                </div>
+                            </label>
+                            <label class="border border-botanical-200 rounded-2xl p-4 flex items-start space-x-3 cursor-pointer hover:bg-botanical-50/50 transition-all bg-white">
+                                <input type="radio" name="shipping" class="mt-1 text-botanical-600 focus:ring-botanical-500">
+                                <div>
+                                    <span class="block text-sm font-bold text-botanical-900">超商純淨取貨 (7-11 / 全家)</span>
+                                    <span class="block text-xs text-botanical-500">安全送達指定門市，方便彈性</span>
+                                    <span class="block text-xs font-semibold text-botanical-700 mt-1">免運費</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Payment Method -->
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-bold text-botanical-800 uppercase tracking-wider flex items-center space-x-2">
+                            <i class="fa-solid fa-credit-card text-botanical-500"></i>
+                            <span>3. 付款方式</span>
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <label class="border border-botanical-200 rounded-xl p-3 flex items-center space-x-2 cursor-pointer bg-white hover:bg-botanical-50/50">
+                                <input type="radio" name="payment" checked class="text-botanical-600">
+                                <span class="text-sm text-botanical-800 font-medium">信用卡線上付</span>
+                            </label>
+                            <label class="border border-botanical-200 rounded-xl p-3 flex items-center space-x-2 cursor-pointer bg-white hover:bg-botanical-50/50">
+                                <input type="radio" name="payment" class="text-botanical-600">
+                                <span class="text-sm text-botanical-800 font-medium">Apple / Google Pay</span>
+                            </label>
+                            <label class="border border-botanical-200 rounded-xl p-3 flex items-center space-x-2 cursor-pointer bg-white hover:bg-botanical-50/50">
+                                <input type="radio" name="payment" class="text-botanical-600">
+                                <span class="text-sm text-botanical-800 font-medium">超商取貨付款</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary Box -->
+                    <div class="bg-botanical-50/60 rounded-2xl p-6 border border-botanical-200 space-y-3">
+                        <div class="flex justify-between text-sm text-botanical-700">
+                            <span>商品小計</span>
+                            <span id="checkoutSubtotal">NT$ 0</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-botanical-700">
+                            <span>植萃環保包裝</span>
+                            <span class="text-botanical-600 font-semibold">免費贈送</span>
+                        </div>
+                        <div class="border-t border-botanical-200 pt-3 flex justify-between font-serif text-lg font-bold text-botanical-900">
+                            <span>總計金額</span>
+                            <span id="checkoutFinalTotal" class="text-roseGold-dark">NT$ 0</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-botanical-600 hover:bg-botanical-700 text-white font-medium py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all text-center flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-lock text-xs"></i>
+                        <span>確認送出訂單並付款</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Success Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden">
+        <div class="bg-cream rounded-3xl max-w-md w-full p-8 text-center space-y-6 shadow-2xl border border-botanical-200">
+            <div class="w-20 h-20 bg-botanical-100 text-botanical-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner animate-bounce">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div class="space-y-2">
+                <h3 class="font-serif text-2xl font-bold text-botanical-900">訂單成立成功！</h3>
+                <p class="text-xs text-botanical-600">感謝您的支持，我們已將訂單確認信與出貨追蹤編號發送至您的電子信箱。</p>
+            </div>
+            <div class="bg-botanical-50 p-4 rounded-2xl text-xs text-botanical-700 space-y-1">
+                <p><span class="font-bold">訂單編號：</span> <span id="successOrderId">BN-982431</span></p>
+                <p><span class="font-bold">預計送達：</span> 3 個工作天內</p>
+            </div>
+            <button id="closeSuccessBtn" class="w-full bg-botanical-600 hover:bg-botanical-700 text-white font-medium py-3 rounded-xl transition-all shadow">
+                返回首頁繼續逛逛
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-botanical-900 text-botanical-100 pt-16 pb-12 mt-auto border-t border-botanical-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-botanical-500 flex items-center justify-center text-white">
+                            <i class="fa-solid fa-seedling text-sm"></i>
+                        </div>
+                        <span class="font-serif text-xl font-bold tracking-wide text-white">Botanical</span>
+                    </div>
+                    <p class="text-xs text-botanical-300 leading-relaxed font-light">
+                        以大自然純淨植萃為靈感，為追求精緻生活與自然美學的您，打造無負擔的香水與化妝品體驗。
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-serif font-bold text-white mb-4 text-sm tracking-wider uppercase">探索系列</h4>
+                    <ul class="space-y-2.5 text-xs text-botanical-300">
+                        <li><a href="#products" class="hover:text-white transition-colors">晨露花香香水</a></li>
+                        <li><a href="#products" class="hover:text-white transition-colors">木質調草本香精</a></li>
+                        <li><a href="#products" class="hover:text-white transition-colors">植萃保濕粉底</a></li>
+                        <li><a href="#products" class="hover:text-white transition-colors">玫瑰金光澤唇膏</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-serif font-bold text-white mb-4 text-sm tracking-wider uppercase">客戶服務</h4>
+                    <ul class="space-y-2.5 text-xs text-botanical-300">
+                        <li><a href="#" class="hover:text-white transition-colors">訂單與物流查詢</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">退換貨政策</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">會員回饋計畫</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">聯絡我們</a></li>
+                    </ul>
+                </div>
+                <div class="space-y-4">
+                    <h4 class="font-serif font-bold text-white mb-4 text-sm tracking-wider uppercase">訂閱自然美學</h4>
+                    <p class="text-xs text-botanical-300">訂閱電子報即享首次購物 9 折優惠與新品搶先知。</p>
+                    <div class="flex items-center space-x-2">
+                        <input type="email" placeholder="輸入您的 Email" class="bg-botanical-800 border border-botanical-700 rounded-xl px-4 py-2 text-xs text-white placeholder-botanical-400 focus:outline-none focus:ring-1 focus:ring-botanical-400 flex-1">
+                        <button class="bg-roseGold hover:bg-roseGold-dark text-white px-4 py-2 rounded-xl text-xs font-medium transition-colors">訂閱</button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-botanical-800 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-botanical-400">
+                <p>&copy; 2026 Botanical & Nature Beauty. All rights reserved.</p>
+                <div class="flex space-x-6 mt-4 sm:mt-0">
+                    <a href="#" class="hover:text-white transition-colors">隱私權政策</a>
+                    <a href="#" class="hover:text-white transition-colors">服務條款</a>
+                    <a href="#" class="hover:text-white transition-colors">Cookie 政策</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // 30 Botanical & Nature Beauty Products (15 Perfumes + 15 Cosmetics)
+        const products = [
+            // --- 植萃香水 Perfumes (1-15) ---
+            {
+                id: 1,
+                category: 'perfume',
+                name: '晨露白茶野玫瑰淡香水',
+                subtitle: 'Morning Dew & Wild Rose Eau de Parfum',
+                price: 1880,
+                rating: 4.9,
+                reviews: 128,
+                image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80',
+                capacity: '50ml',
+                specs: '前調：白茶、佛手柑 / 中調：野玫瑰、牡丹 / 後調：雪松、白麝香',
+                description: '清晨摘採的野生玫瑰交織著微甜的白茶香氣，彷彿漫步在被露水滋潤的英式玫瑰莊園中，散發出清新而高雅的仙氣感。'
+            },
+            {
+                id: 2,
+                category: 'perfume',
+                name: '森林苔蘚與琥珀香精',
+                subtitle: 'Forest Moss & Amber Essence',
+                price: 2150,
+                rating: 4.8,
+                reviews: 94,
+                image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=800&q=80',
+                capacity: '75ml',
+                specs: '前調：松針、冷杉 / 中調：橡木苔、薰衣草 / 後調：暖琥珀、廣藿香',
+                description: '深邃沉穩的森林木質調，帶有雨後苔蘚的濕潤氣息與溫暖的琥珀尾韻，男女皆宜，展現沈靜內斂的自然氣質。'
+            },
+            {
+                id: 3,
+                category: 'perfume',
+                name: '托斯卡尼陽光橙花香水',
+                subtitle: 'Tuscan Neroli & Blossom Perfume',
+                price: 1960,
+                rating: 4.7,
+                reviews: 112,
+                image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80',
+                capacity: '50ml',
+                specs: '前調：苦橙葉、檸檬 / 中調：橙花、茉莉花瓣 / 後調：香草、白琥珀',
+                description: '地中海陽光吻過的橙花與清新柑橘香調，帶來充滿活力與愉悅的度假氛圍，點亮您的每一天。'
+            },
+            {
+                id: 4,
+                category: 'perfume',
+                name: '薰衣草莊園晚安香氛水',
+                subtitle: 'Lavender Valley Sleep Mist',
+                price: 1450,
+                rating: 4.9,
+                reviews: 210,
+                image: 'https://images.unsplash.com/photo-1615397349754-cfa2066a298e?auto=format&fit=crop&w=800&q=80',
+                capacity: '100ml',
+                specs: '前調：普羅旺斯薰衣草 / 中調：洋甘菊、快樂鼠尾草 / 後調：岩蘭草',
+                description: '專為放鬆身心打造的植萃舒眠香氛，溫柔包裹疲憊的感官，引領您進入寧靜甜美的夢鄉。'
+            },
+            {
+                id: 5,
+                category: 'perfume',
+                name: '晨曦百合與綠意微風',
+                subtitle: 'Morning Lily & Green Breeze',
+                price: 1720,
+                rating: 4.6,
+                reviews: 83,
+                image: 'https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=800&q=80',
+                capacity: '50ml',
+                specs: '前調: 翠綠草本、青蘋果 / 中調: 鈴蘭、白百合 / 後調: 喀什米爾木',
+                description: '乾淨純粹的百合花香，伴隨剛修剪過的新鮮草本綠意，散發出宛如初戀般純潔無瑕的清新氣息。'
+            },
+            {
+                id: 6,
+                category: 'perfume',
+                name: '黑醋栗與枝芽木質香水',
+                subtitle: 'Blackcurrant & Twig Woody Perfume',
+                price: 2280,
+                rating: 4.8,
+                reviews: 76,
+                image: 'https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?auto=format&fit=crop&w=800&q=80',
+                capacity: '75ml',
+                specs: '前調：黑醋栗葉、黑加侖 / 中調：玫瑰、無花果葉 / 後調：雪松、香根草',
+                description: '果香與微酸綠葉交織的獨特個性香調，富有層次感且充滿大地生命力，深受文藝質感人士喜愛。'
+            },
+            {
+                id: 7,
+                category: 'perfume',
+                name: '夜幽茉莉與晚香玉香精',
+                subtitle: 'Night Jasmine & Tuberose Absolute',
+                price: 2350,
+                rating: 4.9,
+                reviews: 145,
+                image: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=800&q=80',
+                capacity: '50ml',
+                specs: '前調：依蘭依蘭、橙花 / 中調：夜來香、大花茉莉 / 後調：檀香、安息香',
+                description: '神祕而魅惑的夜間白花香調，散發著濃厚溫潤的浪漫氣息，最適合夜晚約會與重要社交場合。'
+            },
+            {
+                id: 8,
+                category: 'perfume',
+                name: '西西里佛手柑與羅勒',
+                subtitle: 'Sicilian Bergamot & Basil',
+                price: 1680,
+                rating: 4.7,
+                reviews: 92,
+                image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80',
+                capacity: '50ml',
+                specs: '前調：佛手柑、檸檬皮 / 中調：新鮮羅勒、薄荷 / 後調：香根草、苔蘚',
+                description: '明亮多汁的柑橘調結合清新辛香的羅勒，帶來振奮精神的俐落氣息，男女皆能完美駕馭。'
+            },
+            {
+                id: 9,
+                category: 'perfume',
+                name: '雨後檀香與白雪松香水',
+                subtitle: 'After Rain Sandalwood & Cedar',
+                price: 2400,
+                rating: 4.9,
+                reviews: 160,
+                image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=800&q=80',
+                capacity: '75ml',
+                specs: '前調：雨中濕泥土氣息、紫羅蘭葉 / 中調：澳洲檀香、雪松 / 後調：白麝香',
+                description: '捕捉雨後森林大地最原始純淨的芬芳，沈穩神祕的檀香帶來心靈深處的平靜與安定感。'
+            },
+            {
+                id: 10,
+                category: 'perfume',
+                name: '波西米亞微風杏桃花香水',
+                subtitle: 'Bohemian Peach & Blossom',
+                price: 1820,
+                rating: 4.6,
+                reviews: 88,
+                image: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?auto=format&fit=crop&w=800&q=80',
+                capacity: '50ml',
+                specs: '前調：多汁杏桃、黑醋栗 / 中調：槐花、蜜桃花 / 後調：桃花心木',
+                description: '甜美多汁的蜜桃果香揉合細緻花瓣，彷彿陽光灑落的果園，散發青春洋溢的甜美氣息。'
+            },
+            {
+                id: 11,
+                category: 'perfume',
+                name: '冰川雪絨花極地淡香水',
+                subtitle: 'Alpine Edelweiss Glacial Water',
+                price: 2050,
+                rating: 4.8,
+                reviews: 64,
+                image: 'https://images.unsplash.com/photo-1615397349754-cfa2066a298e?auto=format&fit=crop&w=800&q=80',
+                capacity: '50ml',
+                specs: '前調：冰川水、醛香 / 中調：雪絨花、高山藍鈴 / 後調：冷杉木',
+                description: '萃取自阿爾卑斯山高山雪絨花的純淨香氣，帶有高山冰川的冰涼與潔淨，獨特而脫俗。'
+            },
+            {
+                id: 12,
+                category: 'perfume',
+                name: '暖陽無花果與無花果葉香精',
+                subtitle: 'Sun-drenched Fig & Green Leaf',
+                price: 2180,
+                rating: 4.7,
+                reviews: 104,
+                image: 'https://images.unsplash.com/photo-1547887537-6158d64c35b3?auto=format&fit=crop&w=800&q=80',
+                capacity: '75ml',
+                specs: '前調：無花果葉、葡萄柚 / 中調：無花果奶、椰子水 / 後調：無花果木',
+                description: '奶香與綠意的完美平衡，重現地中海陽光下無花果樹下的慵懶午后時光。'
+            },
+            {
+                id: 13,
+                category: 'perfume',
+                name: '微風櫻花與水梨淡香水',
+                subtitle: 'Sakura Breeze & Pear Perfume',
+                price: 1750,
+                rating: 4.8,
+                reviews: 135,
+                image: 'https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?auto=format&fit=crop&w=800&q=80',
+                capacity: '50ml',
+                specs: '前調：清甜日本梨、佛手柑 / 中調：東京櫻花、含羞草 / 後調：白麝香',
+                description: '粉嫩浪漫的櫻花香氣伴隨清脆水梨香，帶領您重溫春日裡櫻花紛飛的唯美動人時刻。'
+            },
+            {
+                id: 14,
+                category: 'perfume',
+                name: '沉香木與東方玫瑰精粹',
+                subtitle: 'Oud Wood & Oriental Rose',
+                price: 2680,
+                rating: 4.9,
+                reviews: 79,
+                image: 'https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?auto=format&fit=crop&w=800&q=80',
+                capacity: '50ml',
+                specs: '前調：大馬士革玫瑰、紅莓 / 中調：沉香木、焚香 / 後調：琥珀、皮革',
+                description: '奢華濃郁的大馬士革玫瑰結合珍貴沉香木，氣場強大且神祕高貴，展現不凡品味。'
+            },
+            {
+                id: 15,
+                category: 'perfume',
+                name: '海鹽鼠尾草與海風香水',
+                subtitle: 'Sea Salt & Sage Coastal Breeze',
+                price: 1980,
+                rating: 4.9,
+                reviews: 240,
+                image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=800&q=80',
+                capacity: '75ml',
+                specs: '前調：黃葵籽、海鹽 / 中調：海風、鼠尾草 / 後調：紅藻、木質香',
+                description: '逃離喧囂的海岸線氣息，海鹽的鹹香與木質鼠尾草交織出自由不羈的自然靈魂。'
+            },
+
+            // --- 自然美妝 Cosmetics (16-30) ---
+            {
+                id: 16,
+                category: 'makeup',
+                name: '植萃光澤保濕粉底液 SPF30',
+                subtitle: 'Botanical Radiance Liquid Foundation',
+                price: 1580,
+                rating: 4.8,
+                reviews: 182,
+                image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+                capacity: '30ml',
+                specs: '色號：#01 象牙白 / #02 自然膚 / 富含玻尿酸與洋甘菊萃取',
+                description: '輕透如羽毛的養膚級粉底液，長時間持妝不黯沉，賦予肌膚水潤透亮的自然微光澤妝感。'
+            },
+            {
+                id: 17,
+                category: 'makeup',
+                name: '玫瑰金花瓣絲絨唇膏',
+                subtitle: 'Rose Gold Petal Velvet Lipstick',
+                price: 980,
+                rating: 4.9,
+                reviews: 310,
+                image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=800&q=80',
+                capacity: '3.8g',
+                specs: '色號：#101 裸粉茶玫瑰 / 添加乳木果油與玫瑰精油',
+                description: '絲絨般滑順的高顯色唇膏，一抹撫平唇紋，綻放如玫瑰花瓣般優雅迷人的柔霧光采。'
+            },
+            {
+                id: 18,
+                category: 'makeup',
+                name: '大地四色植萃眼影盤',
+                subtitle: 'Earth Tone Botanical Eyeshadow Palette',
+                price: 1350,
+                rating: 4.7,
+                reviews: 145,
+                image: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&w=800&q=80',
+                capacity: '9.2g',
+                specs: '包含霧面奶茶、大地棕、細緻香檳金閃粉',
+                description: '靈感源自大自然大地的溫暖色調，粉質細緻服貼不飛粉，輕鬆打造深邃自然的日常眼妝。'
+            },
+            {
+                id: 19,
+                category: 'makeup',
+                name: '有機玫瑰果保濕潤唇膏',
+                subtitle: 'Organic Rosehip Hydrating Lip Balm',
+                price: 580,
+                rating: 4.9,
+                reviews: 420,
+                image: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=800&q=80',
+                capacity: '4.5g',
+                specs: '富含冷壓有機玫瑰果油、蜂蠟、維生素E',
+                description: '深層滋養乾燥雙唇的急救聖品，散發淡淡天然玫瑰清香，打造嘟潤Q彈的自然美唇。'
+            },
+            {
+                id: 20,
+                category: 'makeup',
+                name: '山茶花極光打亮修容餅',
+                subtitle: 'Camellia Glow Highlighter',
+                price: 1120,
+                rating: 4.8,
+                reviews: 98,
+                image: 'https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=800&q=80',
+                capacity: '8g',
+                specs: '山茶花浮雕設計 / 珠光香檳色調',
+                description: '精緻立體的山茶花浮雕，粉質細膩如珍珠般透亮，為臉龐刷出宛如天生好命的水光肌。'
+            },
+            {
+                id: 21,
+                category: 'makeup',
+                name: '晨露花果微醺頰彩腮紅',
+                subtitle: 'Dewy Botanical Blushing Powder',
+                price: 890,
+                rating: 4.7,
+                reviews: 167,
+                image: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=800&q=80',
+                capacity: '6g',
+                specs: '色號：#03 蜜桃珊瑚 / 添加向日葵籽油',
+                description: '如同被晨光吻過的自然好氣色，粉質貼膚透氣，輕輕一刷暈染出宛如天生的微醺紅暈。'
+            },
+            {
+                id: 22,
+                category: 'makeup',
+                name: '天然草本纖長根根分明睫毛膏',
+                subtitle: 'Herbal Lengthening Mascara',
+                price: 780,
+                rating: 4.8,
+                reviews: 215,
+                image: 'https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?auto=format&fit=crop&w=800&q=80',
+                capacity: '8ml',
+                specs: '抗暈染配方 / 溫水可卸 / 添加竹子萃取',
+                description: '根根分明的纖長捲翹睫毛膏，不暈染、不結塊，植物蠟成分溫和滋養睫毛根部。'
+            },
+            {
+                id: 23,
+                category: 'makeup',
+                name: '有機荷荷巴油定妝噴霧',
+                subtitle: 'Jojoba Oil Setting & Hydrating Mist',
+                price: 950,
+                rating: 4.9,
+                reviews: 184,
+                image: 'https://images.unsplash.com/photo-1608248597359-99427b5e6328?auto=format&fit=crop&w=800&q=80',
+                capacity: '100ml',
+                specs: '細緻噴頭 / 定妝兼具保濕鎖水',
+                description: '結合保養與定妝的高機能噴霧，一噴形成保濕隱形防護網，讓精緻妝容全天候完美服貼。'
+            },
+            {
+                id: 24,
+                category: 'makeup',
+                name: '植萃雙效柔霧眉筆',
+                subtitle: 'Botanical Dual-Ended Eyebrow Pencil',
+                price: 620,
+                rating: 4.6,
+                reviews: 110,
+                image: 'https://images.unsplash.com/photo-1583209814633-255d648b2848?auto=format&fit=crop&w=800&q=80',
+                capacity: '0.2g',
+                specs: '極細筆芯 + 柔順螺旋刷 / 防水抗汗',
+                description: '輕鬆勾畫根根分明野生眉的雙頭眉筆，植物蠟配方軟硬適中，新手也能輕鬆上手。'
+            },
+            {
+                id: 25,
+                category: 'makeup',
+                name: '茶樹控油無瑕遮瑕膏',
+                subtitle: 'Tea Tree Blemish Concealer',
+                price: 720,
+                rating: 4.7,
+                reviews: 130,
+                image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+                capacity: '5g',
+                specs: '添加澳洲茶樹精油 / 高遮瑕不卡粉',
+                description: '兼具遮瑕與調理的草本遮瑕膏，精準修飾黑眼圈與瑕疵，敏感痘痘肌也能安心使用。'
+            },
+            {
+                id: 26,
+                category: 'makeup',
+                name: '洋甘菊舒緩卸妝潔顏油',
+                subtitle: 'Chamomile Gentle Cleansing Oil',
+                price: 1150,
+                rating: 4.9,
+                reviews: 275,
+                image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80',
+                capacity: '150ml',
+                specs: '遇水即乳化 / 深度卸除防水彩妝',
+                description: '頂級洋甘菊萃取的溫和卸妝油，極速溶出頑固彩妝與毛孔髒污，洗後清爽不緊繃。'
+            },
+            {
+                id: 27,
+                category: 'makeup',
+                name: '玫瑰純露保濕精華氣墊粉餅',
+                subtitle: 'Rose Hydrating Cushion Foundation',
+                price: 1650,
+                rating: 4.8,
+                reviews: 198,
+                image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
+                capacity: '15g x 2 (含補充芯)',
+                specs: '色號：#01白皙 / #02自然 / SPF50+ PA++++',
+                description: '注入高濃度玫瑰純露的氣墊粉餅，拍出韓系水光透亮肌，隨身攜帶隨時補水遮瑕。'
+            },
+            {
+                id: 28,
+                category: 'makeup',
+                name: '薰衣草舒眠晶透蜜粉餅',
+                subtitle: 'Lavender Translucent Setting Powder',
+                price: 1050,
+                rating: 4.7,
+                reviews: 142,
+                image: 'https://images.unsplash.com/photo-1526947425960-945c6e72858f?auto=format&fit=crop&w=800&q=80',
+                capacity: '10g',
+                specs: '微米級控油粉末 / 柔焦毛孔',
+                description: '帶有淡雅薰衣草香氣的透明定妝蜜粉，一秒吸附多餘油脂，呈現高級柔霧陶瓷肌。'
+            },
+            {
+                id: 29,
+                category: 'makeup',
+                name: '蜂蜜杏仁潤澤指甲油 (植萃無毒)',
+                subtitle: 'Honey Almond Non-Toxic Nail Polish',
+                price: 480,
+                rating: 4.6,
+                reviews: 108,
+                image: 'https://images.unsplash.com/photo-1632345031435-8777f6c9ae8c?auto=format&fit=crop&w=800&q=80',
+                capacity: '12ml',
+                specs: '水性無毒可剝式 / 溫和透氣',
+                description: '孕婦與敏感指甲皆可安心使用的無毒水性指甲油，溫潤的蜂蜜杏仁色調展現溫柔知性美。'
+            },
+            {
+                id: 30,
+                category: 'makeup',
+                name: '植萃多功能彩妝筆 (眼唇頰三用)',
+                subtitle: 'Botanical Multi-Use Color Stick',
+                price: 790,
+                rating: 4.8,
+                reviews: 165,
+                image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=800&q=80',
+                capacity: '5.5g',
+                specs: '色號：#05 干燥玫瑰 / 膏狀滑順好暈染',
+                description: '一支搞定眼影、腮紅與唇彩的高CP值多功能彩妝筆，隨性一抹打造協調唯美的同色系自然妝容。'
+            }
+        ];
+
+        // Global Cart State
+        let cart = [];
+
+        // DOM Elements
+        const productGrid = document.getElementById('productGrid');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const cartToggleBtn = document.getElementById('cartToggleBtn');
+        const cartDrawer = document.getElementById('cartDrawer');
+        const cartPanel = document.getElementById('cartPanel');
+        const cartBackdrop = document.getElementById('cartBackdrop');
+        const closeCartBtn = document.getElementById('closeCartBtn');
+        const cartBadge = document.getElementById('cartBadge');
+        const cartCountBadge = document.getElementById('cartCountBadge');
+        const cartItemsList = document.getElementById('cartItemsList');
+        const emptyCartState = document.getElementById('emptyCartState');
+        const cartSubtotal = document.getElementById('cartSubtotal');
+        const cartTotal = document.getElementById('cartTotal');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const searchInput = document.getElementById('searchInput');
+
+        // Modal Elements
+        const productModal = document.getElementById('productModal');
+        const modalBody = document.getElementById('modalBody');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        // Checkout & Success Elements
+        const checkoutModal = document.getElementById('checkoutModal');
+        const closeCheckoutBtn = document.getElementById('closeCheckoutBtn');
+        const checkoutForm = document.getElementById('checkoutForm');
+        const checkoutSubtotal = document.getElementById('checkoutSubtotal');
+        const checkoutFinalTotal = document.getElementById('checkoutFinalTotal');
+        const successModal = document.getElementById('successModal');
+        const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+        const successOrderId = document.getElementById('successOrderId');
+
+        // Falling Petals Canvas Animation
+        const canvas = document.getElementById('petal-canvas');
+        const ctx = canvas.getContext('2d');
+        let petals = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Petal {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = -20;
+                this.size = Math.random() * 8 + 6;
+                this.speedY = Math.random() * 1.2 + 0.6;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 2 - 1;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.color = Math.random() > 0.5 ? '#f4a5ae' : '#e0b1cb'; // Soft pink / rose
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX + Math.sin(this.y * 0.02) * 0.5;
+                this.rotation += this.rotationSpeed;
+                if (this.y > canvas.height + 20) {
+                    this.reset();
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate((this.rotation * Math.PI) / 180);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                // Draw petal shape
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size / 2, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // Initialize 25 petals
+        for (let i = 0; i < 25; i++) {
+            petals.push(new Petal());
+        }
+
+        function animatePetals() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            petals.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animatePetals);
+        }
+        animatePetals();
+
+        // Render Products
+        function renderProducts(filter = 'all', searchQuery = '') {
+            productGrid.innerHTML = '';
+            
+            const filtered = products.filter(p => {
+                const matchesCategory = filter === 'all' || p.category === filter;
+                const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      p.description.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                productGrid.innerHTML = `
+                    <div class="col-span-full text-center py-16 space-y-3">
+                        <i class="fa-solid fa-seedling text-4xl text-botanical-300"></i>
+                        <p class="text-botanical-700 font-medium">沒有找到符合條件的植萃商品</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group';
+                card.innerHTML = `
+                    <div class="relative aspect-[4/3] overflow-hidden bg-botanical-50 cursor-pointer product-thumb" data-id="${product.id}">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600x400/e5ebe5/415e41?text=Botanical+Beauty'">
+                        <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-botanical-800 text-[11px] font-semibold px-3 py-1 rounded-full shadow">
+                            ${product.category === 'perfume' ? '植萃香水' : '自然美妝'}
+                        </span>
+                        <div class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-md text-roseGold-dark text-xs px-2.5 py-1 rounded-full font-bold shadow flex items-center space-x-1">
+                            <i class="fa-solid fa-star text-[10px]"></i>
+                            <span>${product.rating}</span>
+                            <span class="text-botanical-400 text-[10px]">(${product.reviews})</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-1.5 cursor-pointer product-thumb" data-id="${product.id}">
+                            <span class="text-[11px] uppercase tracking-wider text-roseGold-dark font-semibold">${product.capacity}</span>
+                            <h3 class="font-serif font-bold text-botanical-900 text-lg group-hover:text-botanical-600 transition-colors">${product.name}</h3>
+                            <p class="text-xs text-botanical-600 line-clamp-2 font-light">${product.description}</p>
+                        </div>
+                        <div class="pt-3 border-t border-botanical-100 flex items-center justify-between">
+                            <span class="font-serif font-bold text-xl text-botanical-900">NT$ ${product.price.toLocaleString()}</span>
+                            <button class="add-to-cart-btn ripple-effect bg-botanical-600 hover:bg-botanical-700 text-white px-4 py-2.5 rounded-2xl text-xs font-medium shadow transition-all flex items-center space-x-2" data-id="${product.id}">
+                                <i class="fa-solid fa-bag-shopping text-xs"></i>
+                                <span>加入購物車</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productGrid.appendChild(card);
+            });
+
+            // Bind click events on new cards
+            document.querySelectorAll('.product-thumb').forEach(el => {
+                el.addEventListener('click', () => {
+                    const id = parseInt(el.getAttribute('data-id'));
+                    openProductModal(id);
+                });
+            });
+
+            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(btn.getAttribute('data-id'));
+                    addToCart(id, btn);
+                });
+            });
+        }
+
+        // Open Product Modal
+        function openProductModal(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            modalBody.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="rounded-2xl overflow-hidden aspect-square bg-botanical-50 shadow-md">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="space-y-5">
+                        <div class="space-y-1">
+                            <span class="text-xs font-semibold uppercase tracking-widest text-roseGold-dark">${product.subtitle}</span>
+                            <h2 class="font-serif text-2xl font-bold text-botanical-900">${product.name}</h2>
+                            <div class="flex items-center space-x-2 text-xs text-botanical-600 pt-1">
+                                <span class="bg-botanical-100 text-botanical-800 px-2.5 py-0.5 rounded-full font-medium">容量: ${product.capacity}</span>
+                                <div class="flex items-center text-roseGold-dark">
+                                    <i class="fa-solid fa-star text-xs"></i>
+                                    <span class="ml-1 font-bold">${product.rating}</span>
+                                    <span class="text-botanical-400 ml-1">(${product.reviews} 則評價)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-xs sm:text-sm text-botanical-700 leading-relaxed">${product.description}</p>
+
+                        <div class="bg-botanical-50 p-4 rounded-2xl border border-botanical-200/60 space-y-1.5">
+                            <h4 class="text-xs font-bold text-botanical-900 uppercase tracking-wider flex items-center space-x-1.5">
+                                <i class="fa-solid fa-circle-info text-botanical-500"></i>
+                                <span>規格與成分介紹</span>
+                            </h4>
+                            <p class="text-xs text-botanical-700 leading-relaxed font-light">${product.specs}</p>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-botanical-200">
+                            <div>
+                                <span class="block text-[11px] text-botanical-500">售價</span>
+                                <span class="font-serif text-2xl font-bold text-botanical-900">NT$ ${product.price.toLocaleString()}</span>
+                            </div>
+                            <button id="modalAddToCart" class="bg-botanical-600 hover:bg-botanical-700 text-white px-6 py-3 rounded-2xl text-sm font-medium shadow-lg hover:shadow-xl transition-all flex items-center space-x-2" data-id="${product.id}">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                                <span>加入購物車</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            productModal.classList.remove('hidden');
+            setTimeout(() => {
+                productModal.classList.remove('opacity-0');
+                productModal.querySelector('div > div').classList.remove('scale-95');
+                productModal.querySelector('div > div').classList.add('scale-100');
+            }, 10);
+
+            document.getElementById('modalAddToCart').addEventListener('click', () => {
+                addToCart(product.id, document.getElementById('modalAddToCart'));
+                closeModal();
+            });
+        }
+
+        function closeModal() {
+            productModal.classList.add('opacity-0');
+            productModal.querySelector('div > div').classList.remove('scale-100');
+            productModal.querySelector('div > div').classList.add('scale-95');
+            setTimeout(() => {
+                productModal.classList.add('hidden');
+            }, 300);
+        }
+
+        closeModalBtn.addEventListener('click', closeModal);
+        productModal.addEventListener('click', (e) => {
+            if (e.target === productModal) closeModal();
+        });
+
+        // Add to Cart & Flying Animation
+        function addToCart(productId, buttonElement) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            // Check if already in cart
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCartUI();
+
+            // Flying item animation to cart button
+            const imgEl = buttonElement.closest('.glass-card, #modalBody')?.querySelector('img');
+            if (imgEl) {
+                const rect = imgEl.getBoundingClientRect();
+                const cartRect = cartToggleBtn.getBoundingClientRect();
+
+                const flyer = document.createElement('img');
+                flyer.src = product.image;
+                flyer.className = 'flying-item shadow-2xl border-2 border-white';
+                flyer.style.top = `${rect.top}px`;
+                flyer.style.left = `${rect.left}px`;
+                document.body.appendChild(flyer);
+
+                setTimeout(() => {
+                    flyer.style.top = `${cartRect.top}px`;
+                    flyer.style.left = `${cartRect.left}px`;
+                    flyer.style.width = '20px';
+                    flyer.style.height = '20px';
+                    flyer.style.opacity = '0.3';
+                }, 10);
+
+                setTimeout(() => {
+                    flyer.remove();
+                    // Bounce cart badge
+                    cartBadge.classList.add('scale-125');
+                    setTimeout(() => cartBadge.classList.remove('scale-125'), 200);
+                }, 800);
+            }
+        }
+
+        // Update Cart UI
+        function updateCartUI() {
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            cartBadge.textContent = totalCount;
+            cartCountBadge.textContent = totalCount;
+            cartSubtotal.textContent = `NT$ ${totalPrice.toLocaleString()}`;
+            cartTotal.textContent = `NT$ ${totalPrice.toLocaleString()}`;
+            checkoutSubtotal.textContent = `NT$ ${totalPrice.toLocaleString()}`;
+            checkoutFinalTotal.textContent = `NT$ ${totalPrice.toLocaleString()}`;
+
+            if (totalCount === 0) {
+                emptyCartState.classList.remove('hidden');
+                cartItemsList.innerHTML = '';
+                cartItemsList.appendChild(emptyCartState);
+                checkoutBtn.disabled = true;
+            } else {
+                emptyCartState.classList.add('hidden');
+                cartItemsList.innerHTML = '';
+                checkoutBtn.disabled = false;
+
+                cart.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'flex items-center space-x-4 pt-4 first:pt-0';
+                    row.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-2xl object-cover bg-botanical-50 border border-botanical-200">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-serif font-bold text-botanical-900 text-sm truncate">${item.name}</h4>
+                            <span class="text-xs text-roseGold-dark font-medium">NT$ ${item.price.toLocaleString()}</span>
+                            <div class="flex items-center space-x-2 mt-2">
+                                <button class="decrease-qty w-6 h-6 rounded-full bg-botanical-100 text-botanical-800 flex items-center justify-center hover:bg-botanical-200 text-xs font-bold" data-id="${item.id}">-</button>
+                                <span class="text-xs font-bold text-botanical-800">${item.quantity}</span>
+                                <button class="increase-qty w-6 h-6 rounded-full bg-botanical-100 text-botanical-800 flex items-center justify-center hover:bg-botanical-200 text-xs font-bold" data-id="${item.id}">+</button>
+                            </div>
+                        </div>
+                        <button class="remove-item text-botanical-400 hover:text-rose-500 p-2 transition-colors" data-id="${item.id}">
+                            <i class="fa-solid fa-trash-can text-sm"></i>
+                        </button>
+                    `;
+                    cartItemsList.appendChild(row);
+                });
+
+                // Bind quantity & remove listeners
+                document.querySelectorAll('.increase-qty').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = parseInt(btn.getAttribute('data-id'));
+                        const item = cart.find(i => i.id === id);
+                        if (item) item.quantity++;
+                        updateCartUI();
+                    });
+                });
+
+                document.querySelectorAll('.decrease-qty').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = parseInt(btn.getAttribute('data-id'));
+                        const item = cart.find(i => i.id === id);
+                        if (item) {
+                            item.quantity--;
+                            if (item.quantity <= 0) {
+                                cart = cart.filter(i => i.id !== id);
+                            }
+                        }
+                        updateCartUI();
+                    });
+                });
+
+                document.querySelectorAll('.remove-item').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const id = parseInt(btn.getAttribute('data-id'));
+                        cart = cart.filter(i => i.id !== id);
+                        updateCartUI();
+                    });
+                });
+            }
+        }
+
+        // Open/Close Cart Drawer
+        function openCartDrawer() {
+            cartDrawer.classList.remove('pointer-events-none');
+            cartBackdrop.classList.remove('opacity-0', 'pointer-events-none');
+            cartPanel.classList.remove('translate-x-full');
+        }
+
+        function closeCartDrawer() {
+            cartPanel.classList.add('translate-x-full');
+            cartBackdrop.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                cartDrawer.classList.add('pointer-events-none');
+            }, 300);
+        }
+
+        cartToggleBtn.addEventListener('click', openCartDrawer);
+        closeCartBtn.addEventListener('click', closeCartDrawer);
+        cartBackdrop.addEventListener('click', closeCartDrawer);
+
+        // Filter Buttons
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterButtons.forEach(b => {
+                    b.classList.remove('bg-botanical-700', 'text-white', 'shadow');
+                    b.classList.add('bg-botanical-100', 'text-botanical-800');
+                });
+                btn.classList.remove('bg-botanical-100', 'text-botanical-800');
+                btn.classList.add('bg-botanical-700', 'text-white', 'shadow');
+
+                const filter = btn.getAttribute('data-filter');
+                renderProducts(filter, searchInput.value);
+            });
+        });
+
+        // Search Input
+        searchInput.addEventListener('input', (e) => {
+            const activeFilter = document.querySelector('.filter-btn.bg-botanical-700').getAttribute('data-filter');
+            renderProducts(activeFilter, e.target.value);
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Checkout Modal Logic
+        checkoutBtn.addEventListener('click', () => {
+            closeCartDrawer();
+            checkoutModal.classList.remove('hidden');
+            setTimeout(() => {
+                checkoutModal.classList.remove('opacity-0');
+                checkoutModal.querySelector('div > div').classList.remove('scale-95');
+                checkoutModal.querySelector('div > div').classList.add('scale-100');
+            }, 10);
+        });
+
+        function closeCheckoutModal() {
+            checkoutModal.classList.add('opacity-0');
+            checkoutModal.querySelector('div > div').classList.remove('scale-100');
+            checkoutModal.querySelector('div > div').classList.add('scale-95');
+            setTimeout(() => {
+                checkoutModal.classList.add('hidden');
+            }, 300);
+        }
+
+        closeCheckoutBtn.addEventListener('click', closeCheckoutModal);
+
+        // Submit Checkout Form
+        checkoutForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            closeCheckoutModal();
+
+            // Generate random order ID
+            const randomId = 'BN-' + Math.floor(100000 + Math.random() * 900000);
+            successOrderId.textContent = randomId;
+
+            // Clear cart
+            cart = [];
+            updateCartUI();
+
+            // Show Success Modal
+            successModal.classList.remove('hidden');
+        });
+
+        closeSuccessBtn.addEventListener('click', () => {
+            successModal.classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Initial render on load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderProducts();
+        });
+    </script>
+</body>
+</html>
